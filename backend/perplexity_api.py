@@ -27,7 +27,7 @@ def query_perplexity(prompt: str):
                 "content": prompt  # Correctly inserting user's input
             }
         ],
-        "max_tokens": 50  # Controls response length
+        "max_tokens": 1  # Controls response length
     }
     print(url)
     print(PERPLEXITY_API_KEY)
