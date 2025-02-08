@@ -1,49 +1,49 @@
 body {
   margin: 0;
-  padding: 0;
+  overflow-x: hidden;
   background-color: black;
   color: white;
-  font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
-.terminal {
+.container {
   display: flex;
   flex-direction: column;
-  padding: 10px;
-  width: 100vw;
   height: 100vh;
-  box-sizing: border-box; /* Ensure padding is included in the width and height */
+  width: 100vw;
+}
+
+.box {
+  flex: 1;
+  border-bottom: 1px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box:last-child {
+  border-bottom: none;
+}
+
+.image-box {
+  /* Style for the image box */
+}
+
+.text-box {
+  font-size: 24px;
+}
+
+.input-box {
+  /* Style for the input box */
 }
 
 .terminal-input {
-  border: none;
-  outline: none;
-  background: none;
-  color: white;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 16px;
-  font-weight: bold;
-  caret-color: white;
   width: 100%;
-  white-space: pre-wrap; /* Preserve whitespace and wrap text */
-  word-wrap: break-word; /* Enable text wrapping */
-}
-
-.terminal-input::placeholder {
-  color: grey;
-}
-
-.terminal-input:focus {
-  animation: blink-caret 1s step-end infinite;
-}
-
-@keyframes blink-caret {
-  from, to {
-    border-right-color: transparent;
-  }
-  50% {
-    border-right-color: white;
-  }
+  height: 100%;
+  outline: none;
+  border: none;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: black;
+  color: white;
 }
