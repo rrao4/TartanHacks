@@ -20,7 +20,7 @@ def query_perplexity(history):
     data = {
         "model": "sonar",  # Ensure this is a supported model
         "messages": history,  # Send the full chat history
-        "max_tokens": 10  # Adjust length for better responses
+        "max_tokens": 200  # Adjust length for better responses
     }
 
     try:
