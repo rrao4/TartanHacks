@@ -2,7 +2,6 @@ import requests
 import os
 from dotenv import load_dotenv
 
-# Load API key from .env file
 load_dotenv()
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
@@ -18,16 +17,16 @@ def query_perplexity(history):
     }
 
     data = {
-        "model": "sonar",  # Ensure this is a supported model
-        "messages": history,  # Send the full chat history
-        "max_tokens": 200  # Adjust length for better responses
+        "model": "sonar", 
+        "messages": history, 
+        "max_tokens": 250
     }
 
     try:
         response = requests.post(url, json=data, headers=headers)
-        response.raise_for_status()  # Raise error if response is not 2xx
+        response.raise_for_status() 
 
-        # Extract AI response from "choices"
+        # get AI response and return
         response_data = response.json()
         return response_data.get("choices", [{}])[0].get("message", {}).get("content", "No response found.")
     except requests.exceptions.RequestException as e:

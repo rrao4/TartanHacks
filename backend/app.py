@@ -3,9 +3,9 @@ from game_logic import start_game, process_turn
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for frontend
+CORS(app)
 
-# Single game state stored globally
+# global game state
 game_state = start_game()
 
 @app.route('/')
@@ -22,7 +22,7 @@ def start():
 @app.route('/nextBeat', methods=['POST'])
 def next_beat():
     """Continue the story and restart after 10 turns."""
-    global game_state  # Use the global state
+    global game_state
 
     data = request.get_json()
     user_input = data.get('user_input', '').strip()
@@ -30,7 +30,7 @@ def next_beat():
     if not user_input:
         return jsonify({'error': 'User input is required'}), 400
 
-    # Generate AI response and update game state
+    # Generate response and update game state
     game_state, story_beat = process_turn(game_state, user_input)
 
     return jsonify({'state': game_state, 'story_beat': story_beat})

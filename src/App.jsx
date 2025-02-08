@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import './App.css'; // Ensure this file exists for styling
+import './App.css';
 import Animation from './Animation';
 
 const App = () => {
   const [userInput, setUserInput] = useState('');
-  const [displayedText, setDisplayedText] = useState(''); // Only show the latest response
-  const [loading, setLoading] = useState(false); // Loading state while waiting for AI response
-  const [showWelcome, setShowWelcome] = useState(true); // State to manage welcome screen
+  const [displayedText, setDisplayedText] = useState('');
+  const [loading, setLoading] = useState(false); // loading state for animation
+  const [showWelcome, setShowWelcome] = useState(true); // welcome screen state
 
   useEffect(() => {
     // Start a new game when the app loads
     fetch('http://127.0.0.1:5000/start', { method: 'POST' })
       .then((res) => res.json())
-      .then(() => setDisplayedText("A New Adventure Begins. Type any Theme you would like to play.")) // Show reset message
+      .then(() => setDisplayedText("A new adventure begins. Type any theme you would like to play."))
       .catch((err) => console.error("Failed to start game:", err));
   }, []);
 
   const handleKeyPress = async (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (!userInput.trim()) return; // Prevent empty input
+      if (!userInput.trim()) return; // prevent empty input
 
-      setLoading(true); // Show loading state
+      setLoading(true); // start running animation
 
       const userText = `> ${userInput}`;
-      setDisplayedText(userText); // Replace displayed text with user input
+      setDisplayedText(userText); // replace displayed text with user input
       setUserInput('');
-      e.currentTarget.textContent = ''; // Clear input field
+      e.currentTarget.textContent = ''; // clear user input
 
       try {
         const response = await fetch('http://127.0.0.1:5000/nextBeat', {
@@ -41,9 +41,9 @@ const App = () => {
           console.error('API Error:', data.error);
           setDisplayedText(`[Error] ${data.error}`);
         } else {
-          setDisplayedText(`${data.story_beat}`); // Replace text with AI response
+          setDisplayedText(`${data.story_beat}`); // replace text with AI response
 
-          // If beat_count is 10, reset the story
+          // If beat_count is 8, reset the story
           if (data.state.beat_count === 0) {
             setTimeout(() => setDisplayedText("--- A New Story Begins ---"), 2000);
           }
@@ -52,13 +52,13 @@ const App = () => {
         console.error('Error communicating with API:', error);
         setDisplayedText(`[Error] Failed to reach the server.`);
       } finally {
-        setLoading(false);
+        setLoading(false); // back to standing animation
       }
     }
   };
 
   const handleStartClick = () => {
-    setShowWelcome(false); // Hide welcome screen and show main content
+    setShowWelcome(false); // hide welcome screen
   };
 
   return (
@@ -71,7 +71,7 @@ const App = () => {
       ) : (
         <>
           <div className="box image-box">
-            <Animation /> {/* Add the Animation component here */}
+            <Animation isRunning={loading} /> {/* Pass loading state */}
           </div>
           <div className="box text-box" id="middleBox">
             <div className="terminal-content">

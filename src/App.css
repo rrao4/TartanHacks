@@ -30,12 +30,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px; /* Adds spacing to prevent overlap */
+  padding: 20px;
 }
 
 .image-box img {
-  width: 110%; /* Slightly larger than its normal size */
-  max-width: 250px; /* Prevents it from getting too large */
+  width: 110%; 
+  max-width: 250px; 
 }
 
 
@@ -45,10 +45,6 @@ body {
   justify-content: flex-start;
   align-items: flex-start;
   padding: 10px;
-}
-
-.input-box {
-  /* Style for the input box */
 }
 
 .terminal-input {
