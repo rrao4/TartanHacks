@@ -11,7 +11,7 @@ const App = () => {
     // Start a new game when the app loads
     fetch('http://127.0.0.1:5000/start', { method: 'POST' })
       .then((res) => res.json())
-      .then(() => setDisplayedText("--- A New Story Begins ---")) // Show reset message
+      .then(() => setDisplayedText("A New Adventure Begins. Type any Theme you would like to play.")) // Show reset message
       .catch((err) => console.error("Failed to start game:", err));
   }, []);
 
