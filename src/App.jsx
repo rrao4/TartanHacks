@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css'; // Ensure this file exists for styling
+import Animation from './Animation';
 
 const App = () => {
   const [userInput, setUserInput] = useState('');
@@ -58,7 +59,7 @@ const App = () => {
   return (
     <div className="container">
       <div className="box image-box">
-        {/* Image will be placed here */}
+        <Animation /> {/* Add the Animation component here */}
       </div>
       <div className="box text-box" id="middleBox">
         <div className="terminal-content">
