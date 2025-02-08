@@ -1,19 +1,25 @@
 import requests
-from config import Config
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
 def query_perplexity(prompt):
-    # Construct the API request payload
+    if not PERPLEXITY_API_KEY:
+        return "Error: Missing Perplexity API Key"
+
+    url = "https://api.perplexity.ai/generate"  # Replace with the actual API URL
     headers = {
-        'Authorization': f"Bearer {Config.PERPLEXITY_API_KEY}",
-        'Content-Type': 'application/json'
+        "Authorization": f"Bearer {PERPLEXITY_API_KEY}",
+        "Content-Type": "application/json"
     }
     data = {
-        'prompt': prompt
+        "prompt": prompt,
+        "max_tokens": 200
     }
-    # Replace with the actual Perplexity API endpoint
-    response = requests.post('https://api.perplexity.ai/v1/endpoint', json=data, headers=headers)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        # Error handling can be enhanced here
-        return {'error': 'API request failed'}
+
+    response = requests.post(url, json=data, headers=headers)
+    return response.json().get("text", "Error: No response from Perplexity")

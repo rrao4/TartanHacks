@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
-from config import Config
 from game_logic import start_game, process_turn
 from perplexity_api import query_perplexity
+from flask_cors import CORS
+
+# CORS(app)  # Allow frontend to communicate with backend
 
 app = Flask(__name__)
-app.config.from_object(Config)
 
 @app.route('/')
 def index():
