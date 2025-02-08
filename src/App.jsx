@@ -5,6 +5,7 @@ const App = () => {
   const [userInput, setUserInput] = useState('');
   const [displayedText, setDisplayedText] = useState(''); // Only show the latest response
   const [loading, setLoading] = useState(false); // Loading state while waiting for AI response
+  const [showWelcome, setShowWelcome] = useState(true); // State to manage welcome screen
 
   useEffect(() => {
     // Start a new game when the app loads
@@ -55,26 +56,39 @@ const App = () => {
     }
   };
 
+  const handleStartClick = () => {
+    setShowWelcome(false); // Hide welcome screen and show main content
+  };
+
   return (
     <div className="container">
-      <div className="box image-box">
-        {/* Image will be placed here */}
-      </div>
-      <div className="box text-box" id="middleBox">
-        <div className="terminal-content">
-          <p>{displayedText}</p> {/* Only show the latest response */}
-          {loading && <p>Story is playing out...</p>}
+      {showWelcome ? (
+        <div className="welcome-screen">
+          <h1>Welcome to Your Adventure</h1>
+          <button onClick={handleStartClick}>Start</button>
         </div>
-      </div>
-      <div className="box input-box">
-        <div
-          contentEditable
-          className="terminal-input"
-          onInput={(e) => setUserInput(e.currentTarget.textContent)}
-          onKeyPress={handleKeyPress}
-          autoFocus
-        ></div>
-      </div>
+      ) : (
+        <>
+          <div className="box image-box">
+            {/* Image will be placed here */}
+          </div>
+          <div className="box text-box" id="middleBox">
+            <div className="terminal-content">
+              <p>{displayedText}</p> {/* Only show the latest response */}
+              {loading && <p>Story is playing out...</p>}
+            </div>
+          </div>
+          <div className="box input-box">
+            <div
+              contentEditable
+              className="terminal-input"
+              onInput={(e) => setUserInput(e.currentTarget.textContent)}
+              onKeyPress={handleKeyPress}
+              autoFocus
+            ></div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
