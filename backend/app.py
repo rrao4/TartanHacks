@@ -3,13 +3,12 @@ from game_logic import start_game, process_turn
 from perplexity_api import query_perplexity
 from flask_cors import CORS
 
-# CORS(app)  # Allow frontend to communicate with backend
-
 app = Flask(__name__)
+CORS(app)  # Allow frontend to access the backend
 
 @app.route('/')
 def index():
-    return "Welcome to the Text-Based Game API. Use /start to begin a game."
+    return "Welcome to the AI Story API. Use /nextBeat to continue the story."
 
 @app.route('/start', methods=['POST'])
 def start():
@@ -20,11 +19,17 @@ def start():
 @app.route('/nextBeat', methods=['POST'])
 def next_beat():
     data = request.get_json()
-    user_input = data.get('user_input', '')
-    current_state = data.get('state', {})
-    # Process game turn
-    updated_state, story_beat = process_turn(current_state, user_input)
-    return jsonify({'state': updated_state, 'story_beat': story_beat})
+    user_input = data.get('user_input', '').strip()  # Ensure we get a valid string
+    current_state = data.get('state', {})  # Game state (optional)
+
+    if not user_input:
+        return jsonify({'error': 'User input is required'}), 400
+
+    # Generate new story continuation using Perplexity
+    prompt = f"Game state: {current_state}\nUser input: {user_input}\nContinue the story in one short paragraph:"
+    story_beat = query_perplexity(prompt)  # Call Perplexity API
+
+    return jsonify({'state': current_state, 'story_beat': story_beat})
 
 if __name__ == '__main__':
     app.run(debug=True)
