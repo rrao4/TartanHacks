@@ -1,18 +1,50 @@
 import React, { useState } from 'react';
-import './App.css'; // Make sure to create and import a CSS file for styling
+import './App.css'; // Make sure you have a CSS file for styling
 
 const App = () => {
   const [userInput, setUserInput] = useState('');
   const [inputHistory, setInputHistory] = useState([]);
+  const [loading, setLoading] = useState(false); // Loading state while waiting for AI response
 
-  const handleInputChange = (e) => {
-    setUserInput(e.target.value);
-  };
-
-  const handleKeyPress = (e) => {
+  const handleKeyPress = async (e) => {
     if (e.key === 'Enter') {
-      setInputHistory([...inputHistory, userInput]);
+      e.preventDefault();
+      if (!userInput.trim()) return; // Prevent sending empty input
+
+      setLoading(true); // Show loading state
+
+      // Add user input to history first
+      const updatedHistory = [...inputHistory, `> ${userInput}`];
+      setInputHistory(updatedHistory);
       setUserInput('');
+      e.currentTarget.textContent = ''; // Clear the contentEditable div
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/nextBeat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_input: userInput, // Send user input to backend
+            state: {}, // Include game state if needed
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          console.error('API Error:', data.error);
+          setInputHistory([...updatedHistory, `AI: [Error] ${data.error}`]); // Show error in chat
+        } else {
+          setInputHistory([...updatedHistory, `AI: ${data.story_beat}`]); // Add AI response to chat history
+        }
+      } catch (error) {
+        console.error('Error communicating with API:', error);
+        setInputHistory([...updatedHistory, `AI: [Error] Failed to reach the server.`]);
+      } finally {
+        setLoading(false); // Hide loading state
+      }
     }
   };
 
@@ -23,20 +55,20 @@ const App = () => {
       </div>
       <div className="box text-box">
         <h1>Your Story Starts Now</h1>
+        <div className="terminal-content">
+          {inputHistory.map((line, index) => (
+            <p key={index}>{line}</p>
+          ))}
+          {loading && <p>AI is thinking...</p>}
+        </div>
       </div>
       <div className="box input-box">
         <div
           contentEditable
           className="terminal-input"
           onInput={(e) => setUserInput(e.currentTarget.textContent)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              setInputHistory([...inputHistory, userInput]);
-              setUserInput('');
-              e.currentTarget.textContent = '';
-            }
-          }}
+          onKeyPress={handleKeyPress}
+          autoFocus
         ></div>
       </div>
     </div>
