@@ -7,10 +7,10 @@ load_dotenv()
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
 def query_perplexity(prompt: str):
-    # """Sends a request to Perplexity AI and returns the generated response."""
+    """Sends a request to Perplexity AI and returns the generated response."""
     # url = "https://api.perplexity.ai/chat/completions"
     # headers = {
-    #     "Authorization": "Bearer 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",
+    #     "Authorization": f"Bearer {PERPLEXITY_API_KEY}",
     #     "Content-Type": "application/json"
     # }
     
@@ -39,7 +39,7 @@ def query_perplexity(prompt: str):
     #     response_data = response.json() 
     #     content = response_data.get("choices", [{}])[0].get("message", {}).get("content", "No response found.")
     #     #print("AI Response:", content)
-        return "TEST !" # content
+    return "TEST !" # content
 
         # response_data = response.json()
         # return response_data.get("choices", [{}])[0].get("message", {}).get("content", "Error: No response.")
