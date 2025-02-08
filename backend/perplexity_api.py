@@ -10,7 +10,7 @@ def query_perplexity(prompt: str):
     """Sends a request to Perplexity AI and returns the generated response."""
     url = "https://api.perplexity.ai/chat/completions"
     headers = {
-        "Authorization": "Bearer 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",
+        "Authorization": f"Bearer {PERPLEXITY_API_KEY}",
         "Content-Type": "application/json"
     }
     
