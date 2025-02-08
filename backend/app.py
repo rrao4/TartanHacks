@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
 from game_logic import start_game, process_turn
-from perplexity_api import query_perplexity
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Allow frontend to access the backend
+CORS(app)  # Enable CORS for frontend
+
+# Single game state stored globally
+game_state = start_game()
 
 @app.route('/')
 def index():
@@ -12,24 +14,26 @@ def index():
 
 @app.route('/start', methods=['POST'])
 def start():
-    # Initialize game state
-    game_state = start_game()
+    """Manually reset the game state if needed."""
+    global game_state
+    game_state = start_game()  # Reset state
     return jsonify(game_state)
 
 @app.route('/nextBeat', methods=['POST'])
 def next_beat():
+    """Continue the story and restart after 10 turns."""
+    global game_state  # Use the global state
+
     data = request.get_json()
-    user_input = data.get('user_input', '').strip()  # Ensure we get a valid string
-    current_state = data.get('state', {})  # Game state (optional)
+    user_input = data.get('user_input', '').strip()
 
     if not user_input:
         return jsonify({'error': 'User input is required'}), 400
 
-    # Generate new story continuation using Perplexity
-    prompt = f"Game state: {current_state}\nUser input: {user_input}\nContinue the story in one short paragraph:"
-    story_beat = query_perplexity(prompt)  # Call Perplexity API
+    # Generate AI response and update game state
+    game_state, story_beat = process_turn(game_state, user_input)
 
-    return jsonify({'state': current_state, 'story_beat': story_beat})
+    return jsonify({'state': game_state, 'story_beat': story_beat})
 
 if __name__ == '__main__':
     app.run(debug=True)

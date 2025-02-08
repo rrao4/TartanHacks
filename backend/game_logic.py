@@ -1,19 +1,36 @@
 from perplexity_api import query_perplexity
 
 def start_game():
-    # Initialize game state and first story beat
-    game_state = {
-        'beat_count': 0,
-        'history': [],
-        'theme': None  # To be set after querying Perplexity
+    """Initialize a new game session with an empty history."""
+    return {
+        'beat_count': 0,  # Counts turns
+        'history': [],  # Stores user and AI messages
+        'theme': None  # Can be set dynamically later
     }
-    return game_state
 
 def process_turn(state, user_input):
-    prompt = f"Game state: {state}\nUser input: {user_input}\nContinue the story:"
-    ai_response = query_perplexity(prompt)
+    """Process the user's input and generate the next story beat."""
+    print(f"before: {state['history']}")
 
-    # Update the game state (modify this logic as needed)
-    updated_state = {**state, "last_input": user_input, "last_response": ai_response}
+    # Append user's message to history
+    state['history'].append({"role": "user", "content": user_input})
 
-    return updated_state, ai_response
+    # Check if the story should restart
+    if state['beat_count'] >= 10:
+        return start_game(), "The story has reached its conclusion. Starting a new adventure..."
+
+    # Create the conversation context
+    messages = [{"role": "system", "content": "Be precise and concise."}] + state["history"]
+    
+    # Generate AI response
+    ai_response = query_perplexity(messages)
+
+    # Append AI response to history
+    state['history'].append({"role": "assistant", "content": ai_response})
+
+    # Increment beat count
+    state['beat_count'] += 1
+    print(f"after: {state['history']}")
+    print("-----------")
+
+    return state, ai_response
