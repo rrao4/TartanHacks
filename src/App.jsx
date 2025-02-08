@@ -13,9 +13,6 @@ const App = () => {
 
       setLoading(true); // Show loading state
 
-      // Add user input to history first
-      const updatedHistory = [...inputHistory, `> ${userInput}`];
-      setInputHistory(updatedHistory);
       setUserInput('');
       e.currentTarget.textContent = ''; // Clear the contentEditable div
 
@@ -35,13 +32,13 @@ const App = () => {
 
         if (data.error) {
           console.error('API Error:', data.error);
-          setInputHistory([...updatedHistory, `AI: [Error] ${data.error}`]); // Show error in chat
+          setInputHistory([`[Error] ${data.error}`]);
         } else {
-          setInputHistory([...updatedHistory, `AI: ${data.story_beat}`]); // Add AI response to chat history
+          setInputHistory([data.story_beat]);
         }
       } catch (error) {
         console.error('Error communicating with API:', error);
-        setInputHistory([...updatedHistory, `AI: [Error] Failed to reach the server.`]);
+        setInputHistory([`[Error] Failed to reach the server.`]);
       } finally {
         setLoading(false); // Hide loading state
       }
@@ -53,13 +50,12 @@ const App = () => {
       <div className="box image-box">
         {/* Image will be placed here */}
       </div>
-      <div className="box text-box">
-        <h1>Your Story Starts Now</h1>
+      <div className="box text-box" id="middleBox">
         <div className="terminal-content">
           {inputHistory.map((line, index) => (
             <p key={index}>{line}</p>
           ))}
-          {loading && <p>AI is thinking...</p>}
+          {loading && <p>Story is playing out...</p>}
         </div>
       </div>
       <div className="box input-box">
